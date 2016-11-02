@@ -38,3 +38,13 @@
      $(docker-machine ip manager01):2377
  ```
 
+6. list nodes in the swarm: 
+ ```sh
+ docker node ls
+ ```
+ ``` 
+ ID                           HOSTNAME   STATUS  AVAILABILITY  MANAGER STATUS
+ 2no8xk6evzc577wbhobekh0xd    manager01  Ready   Active        Leader
+ 6uwv9gu71m7oefjrc6nxopxfr    manager02  Ready   Active        Reachable
+ c8c6b0wemgshgyi72r8a4immr *  manager03  Ready   Active        Reachable
+ ```
