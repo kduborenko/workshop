@@ -62,14 +62,18 @@
  ```sh
  docker service create  --replicas 1 --name spring-cloud-workshop-redis   --network workshop  redis
 
- docker service create --endpoint-mode dnsrr --replicas 1 --name config-server  --network workshop  url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$REPO
+ docker service create --endpoint-mode dnsrr --replicas 1 --name config-server --network workshop \
+ url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$REPO
 
- docker service create --endpoint-mode dnsrr --replicas 1 --name dicovery-service  --network workshop  url-shortener/spring-cloud-workshop-service-discovery
+ docker service create --endpoint-mode dnsrr --replicas 1 --name dicovery-service --network workshop \
+ url-shortener/spring-cloud-workshop-service-discovery
 
- docker service create --endpoint-mode dnsrr --replicas 1 --name backend   --network workshop  url-shortener/spring-cloud-workshop-url-shortener-backend --spring.cloud.config.uri=http://config-server:8888/
+ docker service create --endpoint-mode dnsrr --replicas 1 --name backend --network workshop \
+ url-shortener/spring-cloud-workshop-url-shortener-backend --spring.cloud.config.uri=http://config-server:8888/
 
 
-  docker service create  --replicas 3 --name frontend --network workshop  -p 8080:8080 url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://config-server:8888
+  docker service create  --replicas 3 --name frontend --network workshop  -p 8080:8080 \
+  url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://config-server:8888
 
 
  docker service create  --replicas 1 --name spring-cloud-workshop-redis   --network workshop  redis
@@ -83,10 +87,13 @@ spring-cloud-workshop-redis scaled to 3
 
 * things to discuss:
 
-1. --mount for servces (required storage/volume)
-2. Compose does not use swarm mode to deploy services to multiple nodes in a swarm. All containers will be scheduled on the current node. To deploy application across the swarm, use the bundle feature of the Docker experimental build. 
- but: https://docs.docker.com/compose/swarm/ 
-3. Push images to hub, to avoid build on each host. 
-4. frontend/backend both use 8080
-5. hardcoded localhost in yml/jars
+ 1. --mount for servces (required storage/volume /target /tmp?)
+ 2. Compose does not use swarm mode to deploy services to multiple nodes in a swarm. All containers will be scheduled on the current node. To deploy application across the swarm, use the bundle feature of the Docker experimental build. 
+  but: https://docs.docker.com/compose/swarm/ 
+ 3. Push images to hub, to avoid build on each host. 
+ 4. frontend/backend both use 8080
+ 5. hardcoded localhost in yml/jars
+
+
+
 
