@@ -85,6 +85,7 @@ spring-cloud-workshop-redis scaled to 3
 
 1. --mount for servces (required storage/volume)
 2. Compose does not use swarm mode to deploy services to multiple nodes in a swarm. All containers will be scheduled on the current node. To deploy application across the swarm, use the bundle feature of the Docker experimental build. 
+ but: https://docs.docker.com/compose/swarm/ 
 3. Push images to hub, to avoid build on each host. 
 4. frontend/backend both use 8080
 5. hardcoded localhost in yml/jars
