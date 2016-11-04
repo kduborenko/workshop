@@ -94,8 +94,9 @@
  ```sh
    docker service update --image updated/image:0.2 --update-parallelism 2 --update-delay 60s service_name
  ```
-  --update-parallelism num => number of service tasks that the scheduler updates simultaneously (1 task at a time if the flag is not set)
-  --update-delay s/m/h/ => time delay between updates to a service task or sets of tasks
+ 
+  * --update-parallelism num - number of service tasks that the scheduler updates simultaneously 
+  * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
 
 * things to discuss:
 
