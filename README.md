@@ -55,7 +55,7 @@
  Contianer assigned to the overlay network can communicate with each other no matter on which nodes they are deployed.
  
  ```sh
- docker network create --driver overlay workshop
+ docker network create --driver overlay --subnet 10.0.0.0/24 workshop 
 ```
 
 
@@ -98,10 +98,10 @@
   * --update-parallelism num - number of service tasks that the scheduler updates simultaneously 
   * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
 
-* things to discuss:
+* endpoint
 
- 2. Compose does not use swarm mode to deploy services to multiple nodes in a swarm. All containers will be scheduled on the current node. To deploy application across the swarm, use the bundle feature of the Docker experimental build. 
-  but: https://docs.docker.com/compose/swarm/ 
+
+Docker daemon runs an embedded DNS server to provide automatic service discovery for containers connected to user defined networks. Name resolution requests from the containers are handled first by the embedded DNS server. If the embedded DNS server is unable to resolve the request it will be forwarded to any external DNS servers configured for the container. To facilitate this when the container is created, only the embedded DNS server reachable at 127.0.0.11 will be listed in the container’s resolv.conf
 
 
 
