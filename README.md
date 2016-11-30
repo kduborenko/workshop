@@ -113,6 +113,9 @@
   * --update-parallelism num - number of service tasks that the scheduler updates simultaneously 
   * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
 
+* [docker high level overview] 
+(https://docs.google.com/presentation/d/15lwGE6KrJl_TXGNAmSXOZxmVHPGa4XbalL0haFnQxfo/edit#slide=id.p)
+
 * [endpoints/loadbalancing slides](https://docs.google.com/presentation/d/1DFnw6DQq83Chd8ybxu1uQK3r4iUwgElL2uCAyPkukqw/edit#slide=id.p)
 
 * [docker process isolation/overview of kernel namespaces slides] 
