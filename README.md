@@ -11,7 +11,7 @@
 
 2. point local docker client to manager01 and nitialize swarm:
  ```sh
-   eval $(docker-machine env node-1) 
+   eval $(docker-machine env manager01) 
 
    docker swarm init --advertise-addr $(docker-machine ip manager01) \
        --listen-addr $(docker-machine ip manager01):2377
@@ -38,7 +38,24 @@
      $(docker-machine ip manager01):2377
  ```
 
-6. list nodes in the swarm: 
+6. Push docker images to each node
+  ```sh
+  for node in manager01 manager02 manager03
+  do
+    eval $(docker-machine env $node)
+    mvn install
+    for image in url-shortener/spring-cloud-workshop-config-server \
+                 url-shortener/spring-cloud-workshop-service-discovery \
+                 url-shortener/spring-cloud-workshop-url-shortener-backend \
+                 url-shortener/spring-cloud-workshop-url-shortener-frontend
+    do
+      docker create -e affinity:image=$image $image
+    done
+                
+  done
+  ```
+
+7. list nodes in the swarm: 
  ```sh
  docker node ls
  ```
