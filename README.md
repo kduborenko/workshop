@@ -114,8 +114,8 @@
   * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
 
 * [endpoints/loadbalancing slides](https://docs.google.com/presentation/d/1DFnw6DQq83Chd8ybxu1uQK3r4iUwgElL2uCAyPkukqw/edit#slide=id.p)
-
-
+* [docker/overview slides]
+(https://https://docs.google.com/presentation/d/15lwGE6KrJl_TXGNAmSXOZxmVHPGa4XbalL0haFnQxfo/edit#slide=id.p)
 
 
 
