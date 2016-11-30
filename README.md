@@ -77,7 +77,7 @@
 
 
  ```sh
-  docker service create  --replicas 1 --name spring-cloud-workshop-redis   --network workshop  redis
+  docker service create  --replicas 1 --name spring-cloud-workshop-redis  --network workshop  redis
 
   docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-config-server --network workshop \
   url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$REPO
@@ -92,8 +92,6 @@
   docker service create  --replicas 3 --name spring-cloud-workshop-url-shortener-frontend --network workshop  -p 8080:8080 \
   url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888
 
-
-  docker service create  --replicas 1 --name spring-cloud-workshop-redis   --network workshop  redis
  ```
 
 * scale a service:
