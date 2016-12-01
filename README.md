@@ -125,4 +125,6 @@
 (https://docs.google.com/presentation/d/1QoU8XDvPiT7P7Nd7qJFCcfPq_3GbrutJFAVqlBPdmtE/edit#slide=id.p)
 
 
-
+1. slides
+2. logging elk/g4j
+3. images
