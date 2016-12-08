@@ -120,6 +120,18 @@
  
 * ```docker-compose logs``` , streams log output of running services, of all containers defined in ‘docker-compose.yml‘   
 
+*  logging drivers: splunk, awslogs (cloud watch), journald, syslog, gelf (gray log), gcplogs (google cloud), json-file...
+
+
+  fluentd logging driver sends container logs to the Fluentd collector as structured log data.
+  Then, users can use any of the various output plugins of Fluentd to write these logs to various destinations.
+  
+  In addition to the log message itself, the fluentd log driver sends the following metadata in the structured log message:
+  container_id, container_name, source	stdout or stderr
+  
+  
+  
+
 * ELK Stack (elasticsearch, Logstash, and Kibana).
   good for log aggregation, visualization, analysis, and monitoring
   no need to mess with individuall service installations, since there are ready-made and bullet-proof images on Docker Hub
@@ -129,6 +141,9 @@
 - Elasticsearch is a highly scalable open-source full-text search and analytics engine.
 - Logstash is in charge of log aggregation from each of the sources and forwarding them to the Elasticsearch instance.
 - Kibana is an open source analytics and visualization platform designed to work with Elasticsearch. 
+- Filebeat is a log data shipper.
+
+
 
 
 ```sh
