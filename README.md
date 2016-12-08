@@ -113,6 +113,66 @@
   * --update-parallelism num - number of service tasks that the scheduler updates simultaneously 
   * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
 
+
+* docker images cheat sheet.
+
+   Dockerfile format:
+   
+```sh
+INSTRUCTION arguments
+```
+
+* __FROM__: base image from which you are going to build.
+
+```sh
+FROM base_image_name 
+```
+
+* __ADD__: copies/adds new files, directories or remote file and adds them to the fs of the container.
+
+```sh
+ADD awesome_java.jar yet_another_awesome.jar
+```
+
+* __EXPOSE__: specifies ports container listens on, doesn't publish/make ports availible to the host.
+
+```sh
+EXPOSE 8080
+```
+
+* __ENV__: sets/updates environment variables.
+
+```sh
+ENV PATH /usr/local/bin:$PATH
+```
+
+* __RUN__: executes command/commands in a new layer on top of the current image and commit the results.
+  shell form, the command is run in a shell (/bin/sh -c by default):
+
+```sh
+RUN echo 'hell awaits!' 
+```
+* exec form, doesn't invoke shell, meaning no shell vars like $HOME/$PATH.
+  parsed as JSON array, which means DOUBLE QUOTES.
+
+```sh
+RUN ["/bin/echo", "hell awaits"]
+```
+* __CMD__: runs/executes binraies/software you ship, inside container, also supports shell & exec format.
+
+```sh
+CMD ["awesome_binary", "awesome_argument1", "awesome_argument2"]
+```
+
+* __ENTRYPOINT__:
+   configures a container that will run as an executable/binray, meaning that docker run "image" --help
+   will pass --help to the binary set in ENTRYPOINT
+   can be used with CMD to specify default argumnets
+  
+```sh
+ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+```
+
 * [docker high level overview] 
 (https://docs.google.com/presentation/d/15lwGE6KrJl_TXGNAmSXOZxmVHPGa4XbalL0haFnQxfo/edit#slide=id.p)
 
