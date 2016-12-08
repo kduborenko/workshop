@@ -123,7 +123,24 @@
 * ELK Stack (elasticsearch, Logstash, and Kibana).
   good for log aggregation, visualization, analysis, and monitoring
   no need to mess with individuall service installations, since there are ready-made and bullet-proof images on Docker Hub
-  i.e __willdurand/elk__ image
+  the one we gonna use [__willdurand/elk__] (https://hub.docker.com/r/willdurand/elk/) 
+  plus [__Filebeat__] (https://www.elastic.co/products/beats/filebeat) to collect logs (e.g. from log files, from the syslog daemon)  and send them to our instance of Logstash.
+
+- Elasticsearch is a highly scalable open-source full-text search and analytics engine.
+- Logstash is in charge of log aggregation from each of the sources and forwarding them to the Elasticsearch instance.
+- Kibana is an open source analytics and visualization platform designed to work with Elasticsearch. 
+
+
+```sh
+ docker run -p 5601:5601 -p 9200:9200 -p 5044:5044  -p 9300:9300 -it --name elk sebp/elk
+```
+
+ports:
+- 5601 (Kibana web interface).
+- 9200 (Elasticsearch JSON interface).
+- 9300 (Elasticsearch publish interface)
+- 5044 (Logstash Beats interface, receives logs from Beats such as Filebeat).
+
 
 
 # docker images cheat sheet.
