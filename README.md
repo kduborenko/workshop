@@ -114,7 +114,7 @@
   * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
 
 
-* docker images cheat sheet.
+# docker images cheat sheet.
 
    Dockerfile format:
    
