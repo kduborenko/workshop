@@ -122,15 +122,13 @@
 
 *  logging drivers: splunk, awslogs (cloud watch), journald, syslog, gelf (gray log), gcplogs (google cloud), json-file...
 
+   Also use  docker logging tags to specify custom logging format:
+   i.e --log-driver=syslog --log-opt syslog-tag=my_service_name
+   For example, specifying a --log-opt tag="{{.ImageName}}/{{.Name}}/{{.ID}}" value yields syslog log lines like:
+```
+   Aug  7 18:33:19 HOSTNAME docker/hello-world/foobar/5790672ab6a0[9103]: Hello from Docker.
+```  
 
-  fluentd logging driver sends container logs to the Fluentd collector as structured log data.
-  Then, users can use any of the various output plugins of Fluentd to write these logs to various destinations.
-  
-  In addition to the log message itself, the fluentd log driver sends the following metadata in the structured log message:
-  container_id, container_name, source	stdout or stderr
-  
-  
-  
 
 * ELK Stack (elasticsearch, Logstash, and Kibana).
   good for log aggregation, visualization, analysis, and monitoring
