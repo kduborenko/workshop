@@ -113,6 +113,18 @@
   * --update-parallelism num - number of service tasks that the scheduler updates simultaneously 
   * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
 
+# Logging
+
+*  ```docker logs container-name```
+  good for local debugging, definitely beats ```docker exec container-name cat /path/to/logfile```
+ 
+* ```docker-compose logs``` , streams log output of running services, of all containers defined in ‘docker-compose.yml‘   
+
+* ELK Stack (elasticsearch, Logstash, and Kibana).
+  good for log aggregation, visualization, analysis, and monitoring
+  no need to mess with individuall service installations, since there are ready-made and bullet-proof images on Docker Hub
+  i.e __willdurand/elk__ image
+
 
 # docker images cheat sheet.
 
