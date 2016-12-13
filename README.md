@@ -77,24 +77,27 @@
 
 
  ```sh
-  docker service create  --replicas 1 --name spring-cloud-workshop-redis  --network workshop  redis
+  docker service create  --replicas 1 --name spring-cloud-workshop-redis  --network workshop  redis \
+  --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="redis" --log-opt tag="{{.Name}}"
 
   docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-config-server --network workshop \
-  url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$REPO
+  url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$REPO \
+  --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="config-server" --log-opt tag="{{.Name}}"
 
   docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-dicovery-service --network workshop \
-  url-shortener/spring-cloud-workshop-service-discovery --log-driver=syslog --log-opt syslog-address=tcp://rsyslog:514 --log-opt tag="dicovery-service" --log-opt tag="{{.Name}}"
+  url-shortener/spring-cloud-workshop-service-discovery \
+  --log-driver=syslog --log-opt syslog-address=tcp://rsyslog:514 --log-opt tag="dicovery-service" --log-opt tag="{{.Name}}"
 
   docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-url-shortener-backend --network workshop \
-  url-shortener/spring-cloud-workshop-url-shortener-backend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888/
+  url-shortener/spring-cloud-workshop-url-shortener-backend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888 \
+  --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="backend" --log-opt tag="{{.Name}}"
 
 
   docker service create  --replicas 3 --name spring-cloud-workshop-url-shortener-frontend --network workshop  -p 8080:8080 \
-  url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888 --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="frontend" --log-opt tag="{{.Name}}"
+  url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888\
+  --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="frontend" --log-opt tag="{{.Name}}"
   
-  docker service create --endpoint-mode dnsrr --replicas 1 --name rsyslog --network workshop avolokitin/rsyslog
-  docker service create   --replicas 1 --name rsyslog --network workshop  -p 514:514/udp -p 514:514 panoptix/rsyslog
-
+ docker service create --replicas 3 --name rsyslog --network workshop  -p 514:514/udp -p 514:514 avolokitin/rsyslog
  ```
 
 * scale a service:
