@@ -90,7 +90,9 @@
 
 
   docker service create  --replicas 3 --name spring-cloud-workshop-url-shortener-frontend --network workshop  -p 8080:8080 \
-  url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888
+  url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888 --log-driver=syslog --log-opt syslog-address=tcp://rsyslog:514 --log-opt tag="frontend"
+  
+  docker service create  --replicas 1 --name rsyslog --network workshop  -p 514:514/udp -p 514:514 avolokitin/rsyslog 
 
  ```
 
