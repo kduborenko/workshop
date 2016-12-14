@@ -97,7 +97,7 @@
   url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888\
   --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="frontend" --log-opt tag="{{.Name}}"
   
- docker service create --replicas 3 --name rsyslog --network workshop -p 514:514 avolokitin/rsyslog
+ docker service create --mode global --name rsyslog --network workshop -p 514:514 avolokitin/rsyslog
  ```
 
 * scale a service:
@@ -122,7 +122,7 @@
 # Logging
 
 *  ```docker logs container-name```
-  good for local debugging, definitely beats ```docker exec container-name cat /path/to/logfile```
+    good for local debugging, definitely beats ```docker exec container-name cat /path/to/logfile```
  
 * ```docker-compose logs``` , streams log output of running services, of all containers defined in ‘docker-compose.yml‘   
 
@@ -139,8 +139,8 @@
 * ELK Stack (elasticsearch, Logstash, and Kibana).
   good for log aggregation, visualization, analysis, and monitoring
   no need to mess with individuall service installations, since there are ready-made and bullet-proof images on Docker Hub
-  the one we gonna use [__willdurand/elk__] (https://hub.docker.com/r/willdurand/elk/) 
-  plus [__Filebeat__] (https://www.elastic.co/products/beats/filebeat) to collect logs (e.g. from log files, from the syslog daemon)  and send them to our instance of Logstash.
+  [__willdurand/elk__] (https://hub.docker.com/r/willdurand/elk/) 
+  plus [__Filebeat__] (https://www.elastic.co/products/beats/filebeat) / any of the mentioned log-drivers to collect logs (e.g. from log files, from the syslog daemon)  and send them to our instance of Logstash.
 
 - Elasticsearch is a highly scalable open-source full-text search and analytics engine.
 - Logstash is in charge of log aggregation from each of the sources and forwarding them to the Elasticsearch instance.
@@ -148,6 +148,7 @@
 - Filebeat is a log data shipper.
 
 
+We are using syslog driver to ship log to the deicated rsyslog service, which marked __global__ (--mode global), which means that the swarm master schedules a task/container on each and every node of the swarm
 
 
 ```sh
