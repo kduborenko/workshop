@@ -99,6 +99,7 @@
   
  docker service create --mode global --name rsyslog --network workshop -p 514:514 avolokitin/rsyslog
  ```
+NOTE:  rsyslog  marked __global__ (--mode global), which means that the swarm master schedules a task/container on each and every node of the swarm
 
 * scale a service:
 
@@ -138,17 +139,25 @@
 
 * ELK Stack (elasticsearch, Logstash, and Kibana).
   good for log aggregation, visualization, analysis, and monitoring
-  no need to mess with individuall service installations, since there are ready-made and bullet-proof images on Docker Hub
-  [__willdurand/elk__] (https://hub.docker.com/r/willdurand/elk/) 
-  plus [__Filebeat__] (https://www.elastic.co/products/beats/filebeat) / any of the mentioned log-drivers to collect logs (e.g. from log files, from the syslog daemon)  and send them to our instance of Logstash.
-
+  
 - Elasticsearch is a highly scalable open-source full-text search and analytics engine.
 - Logstash is in charge of log aggregation from each of the sources and forwarding them to the Elasticsearch instance.
 - Kibana is an open source analytics and visualization platform designed to work with Elasticsearch. 
-- Filebeat is a log data shipper.
+- syslog driver to ship logs to logstash
+
+```
+docker service create --network logging --name logstash -p 12201:12201/udp avolokitin/logstash
+
+docker service create --network logging --name elasticsearch -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" elasticsearch
+
+docker service create --network logging --name kibana --publish 5601:5601 -e ELASTICSEARCH_URL=http://elasticsearch:9200 kibana
+
+docker run --log-driver syslog --log-opt syslog-address=tcp://localhost:5000 --rm busybox echo hello
+```
+
+open kibana at $(docker-machine ip manager01):5601
 
 
-We are using syslog driver to ship log to the deicated rsyslog service, which marked __global__ (--mode global), which means that the swarm master schedules a task/container on each and every node of the swarm
 
 
 ```sh
