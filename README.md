@@ -245,4 +245,8 @@ ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 
 1. slides
 2. logging elk/g4j
-3. images
+3. images 
+
+
+docker-machine ssh
+sudo sysctl -w vm.max_map_count=262144
