@@ -140,7 +140,7 @@ docker-machine ssh manager01 'sudo sysctl -w vm.max_map_count=262144'
 docker-machine ssh manager02 'sudo sysctl -w vm.max_map_count=262144'
 docker-machine ssh manager03 'sudo sysctl -w vm.max_map_count=262144'
 
-docker service create --network workshop --endpoint-mode dnsrr --name logstash avolokitin/logstash
+docker service create --network workshop  -p 5000:5000 -p 5000:5000/udp --name logstash avolokitin/logstash
 
 docker service create --network workshop --endpoint-mode dnsrr --name elasticsearch -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" elasticsearch
 
