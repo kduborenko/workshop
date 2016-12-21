@@ -114,6 +114,8 @@ url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config
 
 # Logging
 
+Options:
+
 *  ```docker logs container-name```
     good for local debugging, definitely beats ```docker exec container-name cat /path/to/logfile```
  
@@ -167,9 +169,9 @@ update existing services with logging options and drivers:
 
  docker service update  spring-cloud-workshop-redis --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="redis" --log-opt tag="{{.Name}}"
 
-docker service update spring-cloud-workshop-config-server  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="config-server" --log-opt tag="{{.Name}}"
+ docker service update spring-cloud-workshop-config-server  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="config-server" --log-opt tag="{{.Name}}"
 
-docker service update spring-cloud-workshop-dicovery-service  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="dicovery-service" --log-opt tag="{{.Name}}"
+ docker service update spring-cloud-workshop-dicovery-service  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="dicovery-service" --log-opt tag="{{.Name}}"
 
 
 ```
@@ -236,19 +238,4 @@ ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 * [docker high level overview] 
 (https://docs.google.com/presentation/d/15lwGE6KrJl_TXGNAmSXOZxmVHPGa4XbalL0haFnQxfo/edit#slide=id.p)
 
-* [endpoints/loadbalancing slides](https://docs.google.com/presentation/d/1DFnw6DQq83Chd8ybxu1uQK3r4iUwgElL2uCAyPkukqw/edit#slide=id.p)
 
-* [docker process isolation/overview of kernel namespaces slides] 
-(https://docs.google.com/presentation/d/15lwGE6KrJl_TXGNAmSXOZxmVHPGa4XbalL0haFnQxfo/edit#slide=id.p)
-
-* [unionfs/images slides]
-(https://docs.google.com/presentation/d/1QoU8XDvPiT7P7Nd7qJFCcfPq_3GbrutJFAVqlBPdmtE/edit#slide=id.p)
-
-
-1. slides
-2. logging elk/g4j
-3. images 
-
-
-docker-machine ssh
-sudo sysctl -w vm.max_map_count=262144
