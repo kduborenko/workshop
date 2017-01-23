@@ -33,8 +33,6 @@ services:
     image: url-shortener/spring-cloud-workshop-service-discovery
     networks:
       - workshop
-    ports:
-      - 8888:8888
     deploy:
       replicas: 1
       update_config:
