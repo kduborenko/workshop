@@ -65,6 +65,7 @@
  6uwv9gu71m7oefjrc6nxopxfr    manager02  Ready   Active        Reachable
  c8c6b0wemgshgyi72r8a4immr *  manager03  Ready   Active        Reachable
  ```
+ __NOTE__:  Docker swarm mode implements [Raft Consensus Algorithm](https://docs.docker.com/engine/swarm/raft/) and does not require using external key value store anymore, such as Consul or etcd. 
  
  * deploy services
  
@@ -111,6 +112,12 @@ url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config
  
   * --update-parallelism num - number of service tasks that the scheduler updates simultaneously 
   * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
+  
+ 
+# Docker Compose
+
+* Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a Compose file to    configure your application's services. Then, using a single command, you create and start all the services from your configuration. 
+ The Compose file is a YAML file defining services, networks and volumes. The default path for a Compose file is ./docker-compose.yml.
 
 # Logging
 
@@ -238,4 +245,10 @@ ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 * [docker high level overview] 
 (https://docs.google.com/presentation/d/15lwGE6KrJl_TXGNAmSXOZxmVHPGa4XbalL0haFnQxfo/edit#slide=id.p)
 
+
+ 
+ ```sh
+ docker-compose bundle => converts compose.yml into dub
+ docker stack deploy 
+ ```
 
