@@ -1,0 +1,74 @@
+version: "3"
+
+services:
+
+  spring-cloud-workshop-redis:
+    image: redis
+    networks:
+      - workshop
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  spring-cloud-workshop-config-server:
+    image: url-shortener/spring-cloud-workshop-config-server
+    command: --spring.cloud.config.server.git.uri=$repo
+    networks:
+      - workshop
+    depends_on:
+      - spring-cloud-workshop-redis
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  spring-cloud-workshop-dicovery-service:
+    image: url-shortener/spring-cloud-workshop-service-discovery
+    networks:
+      - workshop
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  spring-cloud-workshop-url-shortener-backend:
+    image: url-shortener/spring-cloud-workshop-url-shortener-backend
+    command:
+      --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888
+    networks:
+      - workshop
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  spring-cloud-workshop-url-shortener-frontend:
+    image: url-shortener/spring-cloud-workshop-url-shortener-frontend
+    command:
+      --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888
+    networks:
+      - workshop
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+
+      restart_policy:
+        condition: on-failure
+
+networks:
+  workshop:
