@@ -29,7 +29,7 @@ services:
       restart_policy:
         condition: on-failure
 
-  spring-cloud-workshop-dicovery-service:
+  spring-cloud-workshop-discovery-service:
     image: url-shortener/spring-cloud-workshop-service-discovery
     networks:
       - workshop
