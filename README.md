@@ -83,7 +83,7 @@
   docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-config-server --network workshop \
 url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$repo
   
-  docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-dicovery-service --network workshop \
+  docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-discovery-service --network workshop \
 url-shortener/spring-cloud-workshop-service-discovery 
   
   docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-url-shortener-backend --network workshop url-shortener/spring-cloud-workshop-url-shortener-backend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888 
@@ -178,7 +178,7 @@ update existing services with logging options and drivers:
 
  docker service update spring-cloud-workshop-config-server  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="config-server" --log-opt tag="{{.Name}}"
 
- docker service update spring-cloud-workshop-dicovery-service  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="dicovery-service" --log-opt tag="{{.Name}}"
+ docker service update spring-cloud-workshop-discovery-service  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="discovery-service" --log-opt tag="{{.Name}}"
 
 
 ```
