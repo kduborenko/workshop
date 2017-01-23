@@ -65,6 +65,7 @@
  6uwv9gu71m7oefjrc6nxopxfr    manager02  Ready   Active        Reachable
  c8c6b0wemgshgyi72r8a4immr *  manager03  Ready   Active        Reachable
  ```
+ __NOTE__:  Docker swarm mode implements [Raft Consensus Algorithm](https://docs.docker.com/engine/swarm/raft/) and does not require using external key value store anymore, such as Consul or etcd. 
  
  * deploy services
  
@@ -77,29 +78,21 @@
 
 
  ```sh
-  docker service create  --replicas 1 --name spring-cloud-workshop-redis  --network workshop  redis \
-  --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="redis" --log-opt tag="{{.Name}}"
+  docker service create  --replicas 1 --name spring-cloud-workshop-redis  --network workshop  redis
 
   docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-config-server --network workshop \
-  url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$REPO \
-  --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="config-server" --log-opt tag="{{.Name}}"
-
+url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$repo
+  
   docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-dicovery-service --network workshop \
-  url-shortener/spring-cloud-workshop-service-discovery \
-  --log-driver=syslog --log-opt syslog-address=tcp://rsyslog:514 --log-opt tag="dicovery-service" --log-opt tag="{{.Name}}"
-
-  docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-url-shortener-backend --network workshop \
-  url-shortener/spring-cloud-workshop-url-shortener-backend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888 \
-  --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="backend" --log-opt tag="{{.Name}}"
-
+url-shortener/spring-cloud-workshop-service-discovery 
+  
+  docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-url-shortener-backend --network workshop url-shortener/spring-cloud-workshop-url-shortener-backend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888 
 
   docker service create  --replicas 3 --name spring-cloud-workshop-url-shortener-frontend --network workshop  -p 8080:8080 \
-  url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888\
-  --log-driver=syslog --log-opt syslog-address=tcp://localhost:514 --log-opt syslog-facility=daemon --log-opt tag="frontend" --log-opt tag="{{.Name}}"
+url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888
   
- docker service create --mode global --name rsyslog --network workshop -p 514:514 avolokitin/rsyslog
  ```
-NOTE:  rsyslog  marked __global__ (--mode global), which means that the swarm master schedules a task/container on each and every node of the swarm
+
 
 * scale a service:
 
@@ -119,23 +112,29 @@ NOTE:  rsyslog  marked __global__ (--mode global), which means that the swarm ma
  
   * --update-parallelism num - number of service tasks that the scheduler updates simultaneously 
   * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
+  
+ 
+# Docker Compose
+
+* Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a Compose file to    configure your application's services. Then, using a single command, you create and start all the services from your configuration. 
+ The Compose file is a YAML file defining services, networks and volumes. The default path for a Compose file is ./docker-compose.yml.
 
 # Logging
+
+Options:
 
 *  ```docker logs container-name```
     good for local debugging, definitely beats ```docker exec container-name cat /path/to/logfile```
  
 * ```docker-compose logs``` , streams log output of running services, of all containers defined in ‘docker-compose.yml‘   
 
-*  logging drivers: splunk, awslogs (cloud watch), journald, syslog, gelf (gray log), gcplogs (google cloud), json-file...
+*  logging drivers, sends stdout and stderr output from your container to the centralized logging host, currently supports: splunk, awslogs (cloud watch), journald, syslog, gelf (gray log), gcplogs (google cloud), json-file...
 
-   Also use  docker logging tags to specify custom logging format:
-   i.e --log-driver=syslog --log-opt syslog-tag=my_service_name
-   For example, specifying a --log-opt tag="{{.ImageName}}/{{.Name}}/{{.ID}}" value yields syslog log lines like:
+   docker provides __tag__ option to set custom logging format, i.e:
+   --log-opt tag="{{.ImageName}}/{{.Name}}/{{.ID}}" value yields syslog log lines like:
 ```
    Aug  7 18:33:19 HOSTNAME docker/hello-world/foobar/5790672ab6a0[9103]: Hello from Docker.
 ```  
-
 
 * ELK Stack (elasticsearch, Logstash, and Kibana).
   good for log aggregation, visualization, analysis, and monitoring
@@ -146,31 +145,43 @@ NOTE:  rsyslog  marked __global__ (--mode global), which means that the swarm ma
 - syslog driver to ship logs to logstash
 
 ```
-docker service create --network logging --name logstash -p 12201:12201/udp avolokitin/logstash
+docker-machine ssh manager01 'sudo sysctl -w vm.max_map_count=262144'
+docker-machine ssh manager02 'sudo sysctl -w vm.max_map_count=262144'
+docker-machine ssh manager03 'sudo sysctl -w vm.max_map_count=262144'
 
-docker service create --network logging --name elasticsearch -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" elasticsearch
+docker service create --network workshop  -p 5000:5000 -p 5000:5000/udp --name logstash avolokitin/logstash
 
-docker service create --network logging --name kibana --publish 5601:5601 -e ELASTICSEARCH_URL=http://elasticsearch:9200 kibana
+docker service create --network workshop --endpoint-mode dnsrr --name elasticsearch -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" elasticsearch
 
-docker run --log-driver syslog --log-opt syslog-address=tcp://localhost:5000 --rm busybox echo hello
+docker service create --network workshop --name kibana --publish 5601:5601 -e ELASTICSEARCH_URL=http://elasticsearch:9200 kibana
+
+docker run --log-driver syslog --log-opt syslog-address=udp://localhost:5000 --rm busybox echo hello
 ```
 
 open kibana at $(docker-machine ip manager01):5601
 
 
-
-
-```sh
- docker run -p 5601:5601 -p 9200:9200 -p 5044:5044  -p 9300:9300 -it --name elk sebp/elk
-```
-
 ports:
 - 5601 (Kibana web interface).
 - 9200 (Elasticsearch JSON interface).
-- 9300 (Elasticsearch publish interface)
-- 5044 (Logstash Beats interface, receives logs from Beats such as Filebeat).
+- 5000 (Logstash Beats interface, receives logs from Beats such as Filebeat).
 
 
+update existing services with logging options and drivers:
+
+```
+ docker service update spring-cloud-workshop-url-shortener-frontend --log-driver=syslog --log-opt syslog address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="frontend" --log-opt tag="{{.Name}}"
+
+ docker service update pring-cloud-workshop-url-shortener-backend --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="backend" --log-opt tag="{{.Name}}"
+
+ docker service update  spring-cloud-workshop-redis --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="redis" --log-opt tag="{{.Name}}"
+
+ docker service update spring-cloud-workshop-config-server  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="config-server" --log-opt tag="{{.Name}}"
+
+ docker service update spring-cloud-workshop-dicovery-service  --log-driver=syslog --log-opt syslog-address=udp://localhost:5000 --log-opt syslog-facility=daemon --log-opt tag="dicovery-service" --log-opt tag="{{.Name}}"
+
+
+```
 
 # docker images cheat sheet.
 
@@ -234,19 +245,10 @@ ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 * [docker high level overview] 
 (https://docs.google.com/presentation/d/15lwGE6KrJl_TXGNAmSXOZxmVHPGa4XbalL0haFnQxfo/edit#slide=id.p)
 
-* [endpoints/loadbalancing slides](https://docs.google.com/presentation/d/1DFnw6DQq83Chd8ybxu1uQK3r4iUwgElL2uCAyPkukqw/edit#slide=id.p)
 
-* [docker process isolation/overview of kernel namespaces slides] 
-(https://docs.google.com/presentation/d/15lwGE6KrJl_TXGNAmSXOZxmVHPGa4XbalL0haFnQxfo/edit#slide=id.p)
+ 
+ ```sh
+ docker-compose bundle => converts compose.yml into dub
+ docker stack deploy 
+ ```
 
-* [unionfs/images slides]
-(https://docs.google.com/presentation/d/1QoU8XDvPiT7P7Nd7qJFCcfPq_3GbrutJFAVqlBPdmtE/edit#slide=id.p)
-
-
-1. slides
-2. logging elk/g4j
-3. images 
-
-
-docker-machine ssh
-sudo sysctl -w vm.max_map_count=262144
