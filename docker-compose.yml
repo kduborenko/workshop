@@ -19,8 +19,6 @@ services:
     command: --spring.cloud.config.server.git.uri=$repo
     networks:
       - workshop
-    depends_on:
-      - spring-cloud-workshop-redis
     deploy:
       replicas: 1
       update_config:
@@ -29,7 +27,7 @@ services:
       restart_policy:
         condition: on-failure
 
-  spring-cloud-workshop-discovery-service:
+  spring-cloud-workshop-service-discovery:
     image: url-shortener/spring-cloud-workshop-service-discovery
     networks:
       - workshop
@@ -48,7 +46,7 @@ services:
     networks:
       - workshop
     deploy:
-      replicas: 1
+      replicas: 3
       update_config:
         parallelism: 2
         delay: 10s
@@ -64,7 +62,7 @@ services:
     ports:
       - 8080:8080
     deploy:
-      replicas: 1
+      replicas: 3
       update_config:
         parallelism: 2
         delay: 10s
