@@ -67,52 +67,11 @@
  ```
  __NOTE__:  Docker swarm mode implements [Raft Consensus Algorithm](https://docs.docker.com/engine/swarm/raft/) and does not require using external key value store anymore, such as Consul or etcd. 
  
- * deploy services
- 
- Create an overlay "workshop" network, all containers that constitute workshop services will be assigned to that network.
- Contianer assigned to the overlay network can communicate with each other no matter on which nodes they are deployed.
+ * deploy/update services
  
  ```sh
- docker network create --driver overlay --subnet 10.0.0.0/24 workshop 
-```
-
-
- ```sh
-  docker service create  --replicas 1 --name spring-cloud-workshop-redis  --network workshop  redis
-
-  docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-config-server --network workshop \
-url-shortener/spring-cloud-workshop-config-server --spring.cloud.config.server.git.uri=$repo
-  
-  docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-service-discovery --network workshop \
-url-shortener/spring-cloud-workshop-service-discovery 
-  
-  docker service create --endpoint-mode dnsrr --replicas 1 --name spring-cloud-workshop-url-shortener-backend --network workshop url-shortener/spring-cloud-workshop-url-shortener-backend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888 
-
-  docker service create  --replicas 3 --name spring-cloud-workshop-url-shortener-frontend --network workshop  -p 8080:8080 \
-url-shortener/spring-cloud-workshop-url-shortener-frontend --spring.cloud.config.uri=http://spring-cloud-workshop-config-server:8888
-  
- ```
-
-
-* scale a service:
-
-  docker service scale service_name=desired num of containers / docker service update --replicas num of containers serviec_name
-  docker service ps service_name
-  
- ```sh
- docker service scale spring-cloud-workshop-redis=3
- spring-cloud-workshop-redis scaled to 3
- ```
- 
-* rolling updates:
-
- ```sh
-   docker service update --image updated/image:0.2 --update-parallelism 2 --update-delay 60s service_name
- ```
- 
-  * --update-parallelism num - number of service tasks that the scheduler updates simultaneously 
-  * --update-delay s/m/h/ - time delay between updates to a service task or sets of tasks
-  
+ repo=https://github.com/kduborenko/spring-cloud-workshop-url-shortener-config.git docker stack deploy --compose-file=docker-compose.yml app
+ ```  
  
 # Docker Compose
 
